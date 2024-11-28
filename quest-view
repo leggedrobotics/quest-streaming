@@ -1,0 +1,10 @@
+#/usr/bin/bash
+
+# Starts streaming the quest headset
+
+# check if there is a USB device
+
+if ! scrcpy  --max-size=1920 --max-fps=60 --no-audio --angle -22 --crop 1778:1039:2200:549 -d; then
+    echo "Failed to connect to USB, using wifi"
+    scrcpy  --max-fps=30 --no-audio --angle -22 --crop 1778:1039:2200:549 -b 2M -m 1024 
+fi

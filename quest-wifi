@@ -1,0 +1,35 @@
+#!/usr/bin/bash
+
+# Starts wifi adb connection
+
+# check if TCP server is already running
+if adb shell netstat -tln | grep -q :5555; then
+    echo "TCP server is already running on port 5555."
+else
+    # try to start TCP on 5555
+    if ! adb tcpip 5555; then
+        echo "Failed to start TCP on port 5555. Exiting..."
+        exit 1
+    fi
+fi
+
+sleep 1
+# adb shell ip route
+# get the IP address of the device
+ip=$(adb shell ip route | awk '/wlan0/ {print $9}')
+
+if [ -z "$ip" ]; then
+    echo "Failed to get IP address of the device. Exiting..."
+    exit 1
+fi
+
+# connect to the device
+
+if ! adb connect $ip:5555; then
+    echo "Failed to connect to the device. Exiting..."
+    exit 1
+else
+    echo "Connected to $ip:5555, you can now disconnect the USB cable."
+fi
+
+exit 0
